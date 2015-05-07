@@ -270,6 +270,10 @@ Full-Width Styles
   padding: 20px 10px;
   margin: 0 auto;
 }
+.inner a {
+  text-decoration: none;
+  outline: none;
+}
 
 #forkme_banner {
   display: block;
