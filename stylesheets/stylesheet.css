@@ -270,10 +270,13 @@ Full-Width Styles
   padding: 20px 10px;
   margin: 0 auto;
 }
+<<<<<<< HEAD
 .inner a {
   text-decoration: none;
   outline: none;
 }
+=======
+>>>>>>> 6ffb2b055a20a29173f2443fc31a28b461941111
 
 #forkme_banner {
   display: block;
