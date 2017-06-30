@@ -11,7 +11,8 @@
     <meta name="format-detection" content="telephone=no">
     <title>VideoPlayer</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
-    <script src="https://cdn.plyr.io/2.0.13/plyr.js"></script>
+<!--     <script src="https://cdn.plyr.io/2.0.13/plyr.js"></script> -->
+    <script src="./javascripts/plyr.js"></script>
     <script src="https://cdn.jsdelivr.net/hls.js/latest/hls.js"></script>
     <link rel="stylesheet" href="https://cdn.plyr.io/2.0.13/plyr.css">
     <style type="text/css">
@@ -85,7 +86,7 @@
 <body>
   <div class="demo_page">
     <div class="player_wrapper">
-        <video id="player" width="100%" height="auto" webkit-playsinline playsinline crossorigin></video>
+        <video id="player" width="100%" height="auto"></video>
     </div>
     <div class="video_more">
 
@@ -112,6 +113,7 @@
             playerEl = document.querySelector('#player')
             var instance = plyr.setup(playerEl, {
                 autoplay: false,
+                inline: true,
                 controls: ['play-large', 'play', 'progress', 'current-time', 'captions',
                     'fullscreen'
                 ],
@@ -129,21 +131,16 @@
         };
 
         var handleHlsVideo = function (vObj) {
-            if (Hls.isSupported()) {
-                var hls = new Hls();
-                if (player) {
-                    destroyPlayer();
-                }
-                playerEl =document.querySelector('#player');
-                hls.loadSource(vObj.url);
-                hls.attachMedia(playerEl);
-                hls.on(Hls.Events.MANIFEST_PARSED, function () {
-                    playerEl.play();
-                });
-                setUpPlayer();
-                player.poster('https://cdn.selz.com/plyr/1.5/View_From_A_Blue_Moon_Trailer-HD.jpg?v1');
+            playerEl = document.querySelector('#player');
+            if (player) {
+                destroyPlayer();
             }
-            return false;
+            playerEl = document.querySelector('#player');
+            setUpPlayer();
+            playerEl.setAttribute('src', vObj.url);
+            playerEl.play();
+            player.poster('https://cdn.selz.com/plyr/1.5/View_From_A_Blue_Moon_Trailer-HD.jpg?v1');
+            return;
         };
 
         var isHlsFormat = function (url) {
@@ -154,17 +151,13 @@
             return /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
         };
         
-        var getVideo = function (index, player) {
+        var getVideo = function (index) {
             var tmp = videos[index],
                 url = tmp.url,
                 type = 'video/mp4';
             if (isHlsFormat(url)) {
-                if (isIos()) {
-                    
-                } else {
-                    handleHlsVideo(tmp);
-                    return false;
-                }
+                handleHlsVideo(tmp);
+                type = "application/x-mpegURL";
             }
             return {
                 type: 'video',
