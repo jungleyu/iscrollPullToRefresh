@@ -149,13 +149,22 @@
         var isHlsFormat = function (url) {
           return /m3u8(#|\?|$)/i.exec(url);
         };
+        
+        var isIos = function() {
+            return /(iPad|iPhone|iPod)/g.test(navigator.platform);
+        };
+        
         var getVideo = function (index, player) {
             var tmp = videos[index],
                 url = tmp.url,
                 type = 'video/mp4';
             if (isHlsFormat(url)) {
-                handleHlsVideo(tmp);
-                return false;
+                if (isIos()) {
+                    type = 'application/x-mpedURL';
+                } else {
+                    handleHlsVideo(tmp);
+                    return false;
+                }
             }
             return {
                 type: 'video',
