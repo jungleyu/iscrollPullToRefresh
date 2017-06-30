@@ -96,12 +96,12 @@
 <script type="text/javascript">
     $(document).ready(function () {
         var videos = [{
-            image: 'https://citivelocity.qumucloud.com/kulu/6p3rN63RTFQ/thumbnail;w=197;h=111?v=BWiI9rouuDx17',
-            url: 'https://citivelocity.qumucloud.com/asset/vsY7Gh6LenD.mp4?format=mobile_mp4',
+            url: 'https://cdn.selz.com/plyr/1.5/View_From_A_Blue_Moon_Trailer-HD.mp4?format=mobile_mp4',
+            image: 'https://cdn.selz.com/plyr/1.5/View_From_A_Blue_Moon_Trailer-HD.jpg?v1',
             title: 'What post-FOMC price action says about coming risks'
         }, {
-            url: 'https://citi.kulu.net/asset/gZT0bX8bS99.m3u8?format=hls_default',
-            image: 'https://citi.kulu.net/kulu/i8M3XBsPm2X/thumbnail;w=197;h=111?v=rmulBrgIY6X10',
+            url: 'https://content.jwplatform.com/manifests/vM7nH0Kl.m3u8?format=hls_default',
+            image: 'https://vjs.zencdn.net/v/oceans.png',
             title: 'Global Economic Outlook and Strategy: June 2017'
         }];
 
@@ -201,7 +201,9 @@
                 $(this).addClass('active').siblings().removeClass('active');
                 player.pause();
                 if(setResource(Number(index))) {
-                  
+                  if (player.isReady()) {
+                    player.play();
+                  }
                 }
             });
         };
