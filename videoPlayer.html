@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="applicable-device" content="mobile">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>VideoPlayer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+    <script src="https://cdn.plyr.io/2.0.13/plyr.js"></script>
+    <script src="https://cdn.jsdelivr.net/hls.js/latest/hls.js"></script>
+    <link rel="stylesheet" href="https://cdn.plyr.io/2.0.13/plyr.css">
+    <style type="text/css">
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: "Roboto", "Roboto Regular", "Arial", "Helvetica Neue", "HelveticaNeue", "Helvetica-Neue", "Helvetica", "BBAlpha Sans", sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+        }
+        
+        .demo_page {
+          display: -webkit-box;
+          display: flex;
+          -webkit-box-orient: vertical;
+          flex-direction: column;
+          height: 100%;
+        }
+
+        .video_wrapper {
+          background-color: #000;
+        }
+
+        .video_more {
+            background-color: rgba(0, 0, 0, .5);
+            color: #FFF;
+            -webkit-box-flex: 1;
+            flex: 1;
+        }
+
+        .video_item {
+            padding: 8px;
+            word-break: break-all;
+        }
+
+        .video_item.active {
+            color: yellow;
+        }
+
+        .citi-player-logo {
+            font-size: 12px;
+            font-weight: bold;
+            color: blue;
+            animation: logoColorChange 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes logoColorChange {
+            0% {
+                color: blue;
+            }
+            25% {
+                transform: rotate(45deg);
+            }
+            50% {
+                transform: scale(.5);
+            }
+            75% {
+                transform: rotate(-45deg);
+            }
+            100% {
+                color: orange;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+  <div class="demo_page">
+    <div class="player_wrapper">
+        <video id="player" width="100%" height="auto" webkit-playsinline playsinline crossorigin></video>
+    </div>
+    <div class="video_more">
+
+    </div>
+  </div>
+</body>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var videos = [{
+            image: 'https://citivelocity.qumucloud.com/kulu/6p3rN63RTFQ/thumbnail;w=197;h=111?v=BWiI9rouuDx17',
+            url: 'https://citivelocity.qumucloud.com/asset/vsY7Gh6LenD.mp4?format=mobile_mp4',
+            title: 'What post-FOMC price action says about coming risks'
+        }, {
+            url: 'https://citi.kulu.net/asset/gZT0bX8bS99.m3u8?format=hls_default',
+            image: 'https://citi.kulu.net/kulu/i8M3XBsPm2X/thumbnail;w=197;h=111?v=rmulBrgIY6X10',
+            title: 'Global Economic Outlook and Strategy: June 2017'
+        }];
+
+        var player,
+            playerEl,
+            vid = ~~(Math.random() * 2);
+
+        var setUpPlayer = function () {
+            playerEl = document.querySelector('#player')
+            var instance = plyr.setup(playerEl, {
+                autoplay: false,
+                controls: ['play-large', 'play', 'progress', 'current-time', 'captions',
+                    'fullscreen'
+                ],
+                showPosterOnEnd: true
+            });
+            player = instance[0];
+            return player;
+        };
+
+        var destroyPlayer = function () {
+            if (player && typeof player.destroy === 'function') {
+                player.destroy();
+                player = null;
+            }
+        };
+
+        var handleHlsVideo = function (vObj) {
+            if (Hls.isSupported()) {
+                var hls = new Hls();
+                if (player) {
+                    destroyPlayer();
+                }
+                playerEl =document.querySelector('#player');
+                hls.loadSource(vObj.url);
+                hls.attachMedia(playerEl);
+                hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                    playerEl.play();
+                });
+                setUpPlayer();
+                player.poster('https://cdn.selz.com/plyr/1.5/View_From_A_Blue_Moon_Trailer-HD.jpg?v1');
+            }
+            return false;
+        };
+
+        var isHlsFormat = function (url) {
+          return /m3u8(#|\?|$)/i.exec(url);
+        };
+        var getVideo = function (index, player) {
+            var tmp = videos[index],
+                url = tmp.url,
+                type = 'video/mp4';
+            if (isHlsFormat(url)) {
+                handleHlsVideo(tmp);
+                return false;
+            }
+            return {
+                type: 'video',
+                sources: [{
+                    src: url,
+                    type: type
+                }],
+                poster: 'https://cdn.selz.com/plyr/1.5/View_From_A_Blue_Moon_Trailer-HD.jpg?v1'
+            }
+        };
+
+        var setResource = function (id) {
+            var src = getVideo(id, player);
+            if (src) {
+                player.source(src);
+                return true;
+            }
+            return false;
+        };
+
+        var initMoreVideos = function () {
+            var h = [],
+                moreEl = $('.video_more');
+            videos.forEach(function (video, index) {
+                h.push('<div data-index=' + index + ' class="video_item');
+                if (index === vid) {
+                    h.push(' active');
+                }
+                h.push('">');
+                h.push((index + 1) + '. ' + video.title + ' - Url: ' + video.url);
+                h.push('</div>');
+            })
+            moreEl.html(h.join(''));
+
+            var videoEl = $('.video_item', moreEl);
+            videoEl.on('click', function () {
+                if ($(this).hasClass('active')) {
+                    return;
+                }
+                var index = $(this).attr('data-index');
+                $(this).addClass('active').siblings().removeClass('active');
+                player.pause();
+                if(setResource(Number(index))) {
+                  
+                }
+            });
+        };
+
+        initMoreVideos();
+        setUpPlayer();
+        setResource(vid);
+    });
+
+</script>
+
+</html>
