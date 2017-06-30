@@ -139,7 +139,7 @@
             setUpPlayer();
             playerEl.setAttribute('src', vObj.url);
             playerEl.play();
-            player.poster('https://cdn.selz.com/plyr/1.5/View_From_A_Blue_Moon_Trailer-HD.jpg?v1');
+            player.poster(vObj.image);
             return;
         };
 
@@ -165,7 +165,7 @@
                     src: url,
                     type: type
                 }],
-                poster: 'https://cdn.selz.com/plyr/1.5/View_From_A_Blue_Moon_Trailer-HD.jpg?v1'
+                poster: tmp.image
             }
         };
 
