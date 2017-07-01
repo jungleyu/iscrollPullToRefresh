@@ -105,12 +105,11 @@
             title: 'Global Economic Outlook and Strategy: June 2017'
         }];
 
-        var player,
-            playerEl,
-            vid = ~~(Math.random() * 2);
+        var player = null;
+        var vid = ~~(Math.random() * 2);
 
         var setUpPlayer = function () {
-            playerEl = document.querySelector('#player')
+            var playerEl = document.querySelector('#player')
             var instance = plyr.setup(playerEl, {
                 autoplay: false,
                 inline: true,
@@ -119,8 +118,7 @@
                 ],
                 showPosterOnEnd: true
             });
-            player = instance[0];
-            return player;
+            return instance[0];
         };
 
         var destroyPlayer = function () {
@@ -131,24 +129,19 @@
         };
 
         var handleHlsVideo = function (vObj) {
-            playerEl = document.querySelector('#player');
             if (player) {
                 destroyPlayer();
             }
-            playerEl = document.querySelector('#player');
-            setUpPlayer();
+            var playerEl = document.querySelector('#player');
+            player = setUpPlayer();
             playerEl.setAttribute('src', vObj.url);
+            playerEl.setAttribute('poster', vObj.image);
             playerEl.play();
-            player.poster(vObj.image);
             return;
         };
 
         var isHlsFormat = function (url) {
           return /m3u8(#|\?|$)/i.exec(url);
-        };
-        
-        var isIos = function() {
-            return /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
         };
         
         var getVideo = function (index) {
@@ -170,12 +163,15 @@
         };
 
         var setResource = function (id) {
-            var src = getVideo(id, player);
+            var defer = $.Deferred();
+            var src = getVideo(id);
             if (src) {
                 player.source(src);
-                return true;
+                defer.resolve();
+            } else {
+                defer.reject();
             }
-            return false;
+            return defer.promise();
         };
 
         var initMoreVideos = function () {
@@ -199,18 +195,18 @@
                 }
                 var index = $(this).attr('data-index');
                 $(this).addClass('active').siblings().removeClass('active');
-                player.pause();
-                if(setResource(Number(index))) {
-//                   if (player.isReady()) {
-//                     player.play();
-//                   }
-                }
+                window.player = player;
+                setResource(index).then(function() {
+                    player.play();
+                })
             });
         };
 
         initMoreVideos();
-        setUpPlayer();
-        setResource(vid);
+        player = setUpPlayer();
+        setResource(vid).then(function() {
+            player.play();
+        });
     });
 
 </script>
