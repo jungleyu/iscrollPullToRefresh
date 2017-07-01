@@ -98,11 +98,15 @@
         var videos = [{
             url: 'https://cdn.selz.com/plyr/1.5/View_From_A_Blue_Moon_Trailer-HD.mp4?format=mobile_mp4',
             image: 'https://cdn.selz.com/plyr/1.5/View_From_A_Blue_Moon_Trailer-HD.jpg?v1',
-            title: 'What post-FOMC price action says about coming risks'
+            title: 'What post-FOMC risks'
         }, {
             url: 'https://content.jwplatform.com/manifests/vM7nH0Kl.m3u8?format=hls_default',
             image: 'https://vjs.zencdn.net/v/oceans.png',
-            title: 'Global Economic Outlook and Strategy: June 2017'
+            title: 'Global Economic 7'
+        }, {
+            url: 'http://clappr.io/highline.mp4',
+            image: 'http://clappr.io/poster.png',
+            title: 'Highline'
         }];
 
         var player = null;
@@ -163,15 +167,12 @@
         };
 
         var setResource = function (id) {
-            var defer = $.Deferred();
             var src = getVideo(id);
             if (src) {
                 player.source(src);
-                defer.resolve();
-            } else {
-                defer.reject();
+                return true;
             }
-            return defer.promise();
+            return false;
         };
 
         var initMoreVideos = function () {
@@ -196,17 +197,17 @@
                 var index = $(this).attr('data-index');
                 $(this).addClass('active').siblings().removeClass('active');
                 window.player = player;
-                setResource(index).then(function() {
+                if (setResource(index)) {
                     player.play();
-                })
+                }
             });
         };
 
         initMoreVideos();
         player = setUpPlayer();
-        setResource(vid).then(function() {
+        if (setResource(index)) {
             player.play();
-        });
+        }
     });
 
 </script>
