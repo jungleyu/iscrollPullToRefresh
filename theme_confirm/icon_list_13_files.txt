@@ -1,0 +1,13 @@
+cv_ic_action_add_104x104.png
+cv_ic_action_play_blue
+cv_ic_action_pause_blue
+cv_ic_action_zoom_in_blue
+cv_ic_action_zoom_out_blue
+cv_ic_lp_complete.png
+cv_ic_lp_lock
+ic_sel_blue
+cv_theme_preview_trading_light
+type_educational.png
+type_news
+cv_ic_option_btn_check_on_holo_light.png
+cv_t_ic_spinner_bg
