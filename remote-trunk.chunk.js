@@ -1,0 +1,2 @@
+(this["webpackJsonpmy-react-app"]=this["webpackJsonpmy-react-app"]||[]).push([[3],{62:function(t,e,n){"use strict";n.r(e),n.d(e,"default",(function(){return r}));n(0);var c=n(7);function r(){return Object(c.jsx)("h1",{children:"Remote Page"})}}}]);
+//# sourceMappingURL=remote-trunk.81f06fa6.chunk.js.map
